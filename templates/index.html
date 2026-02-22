@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block title %}Padel Americano — Турниры{% endblock %}
+
+{% block extra_styles %}
+<style>
+.hero {
+    text-align: center;
+    padding: 3rem 0 4rem;
+}
+.hero-eyebrow {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+.hero h1 {
+    font-size: 5rem;
+    line-height: 0.95;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 60%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 480px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+}
+.court-icon {
+    width: 80px; height: 80px;
+    margin: 0 auto 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+}
+.create-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+@media (max-width: 768px) {
+    .create-section { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 3.5rem; }
+}
+.form-card { }
+.tournaments-list { }
+.t-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: all 0.15s;
+}
+.t-item:last-child { border-bottom: none; }
+.t-item:hover .t-name { color: var(--accent); }
+.t-icon {
+    width: 44px; height: 44px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+.t-info { flex: 1; }
+.t-name {
+    font-weight: 600;
+    color: var(--text);
+    transition: color 0.15s;
+    margin-bottom: 0.2rem;
+}
+.t-meta { font-size: 0.8rem; color: var(--muted); }
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+}
+.empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero animate">
+    <div class="hero-eyebrow">🎾 Система американо</div>
+    <h1>PADEL<br>AMERICANO</h1>
+    <p>Генератор турниров с автоматической ротацией партнёров и соперников по системе Американо.</p>
+</div>
+
+<div class="create-section">
+    <div class="card animate" style="animation-delay: 0.1s">
+        <div class="section-title">Новый турнир</div>
+        <form action="/tournament/create" method="post">
+            <div class="form-group">
+                <label>Название турнира</label>
+                <input type="text" name="name" placeholder="Кубок выходного дня" required>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem">
+                <div class="form-group">
+                    <label>Кортов</label>
+                    <input type="number" name="courts" value="2" min="1" max="8" required>
+                </div>
+                <div class="form-group">
+                    <label>Раундов</label>
+                    <input type="number" name="num_rounds" value="6" min="1" max="20" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Игроки (каждый с новой строки)</label>
+                <textarea name="player_names" rows="8" placeholder="Алексей&#10;Мария&#10;Дмитрий&#10;Анна&#10;Сергей&#10;Елена&#10;Павел&#10;Ольга" required></textarea>
+                <div style="font-size:0.75rem; color: var(--muted); margin-top:0.4rem">Минимум 4 игрока, кратно 4 рекомендуется</div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%">
+                🏆 Создать турнир
+            </button>
+        </form>
+    </div>
+
+    <div class="card animate" style="animation-delay: 0.2s">
+        <div class="section-title">Турниры</div>
+        {% if tournaments %}
+            {% for t in tournaments %}
+            <a href="/tournament/{{ t.id }}" class="t-item">
+                <div class="t-icon">🎾</div>
+                <div class="t-info">
+                    <div class="t-name">{{ t.name }}</div>
+                    <div class="t-meta">{{ t.players | length }} игроков · {{ t.courts }} корт(а) · Раунд {{ t.current_round + 1 }}/{{ t.rounds | length }}</div>
+                </div>
+                <span class="badge badge-{{ t.status }}">
+                    {% if t.status == 'active' %}Активен
+                    {% elif t.status == 'finished' %}Завершён
+                    {% else %}Настройка{% endif %}
+                </span>
+            </a>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">🎾</div>
+                <p>Создайте первый турнир</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card animate" style="animation-delay: 0.3s; margin-top: 2rem">
+    <div class="section-title">Как работает Американо</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem">
+        <div>
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">🔄</div>
+            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Ротация</strong>
+            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">После каждого раунда партнёры и соперники меняются — каждый играет со всеми.</p>
+        </div>
+        <div>
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">🏅</div>
+            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Очки</strong>
+            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">Игроки набирают очки равные количеству выигранных геймов. Итог — личный зачёт.</p>
+        </div>
+        <div>
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">👥</div>
+            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Социально</strong>
+            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">Идеально для клубных дней — каждый познакомится с каждым участником.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
