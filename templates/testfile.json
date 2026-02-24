@@ -1,0 +1,22 @@
+{
+    "c8bb3c8d": {
+        "id": "c8bb3c8d",
+        "name": "a",
+        "status": "active",
+        "playerCount": 8,
+        "courts": 2,
+        "currentRound": 0,
+        "totalRounds": 6,
+        "visitedAt": 1771919332024
+    },
+    "1a938384": {
+        "id": "1a938384",
+        "name": "v",
+        "status": "active",
+        "playerCount": 7,
+        "courts": 1,
+        "currentRound": 0,
+        "totalRounds": 3,
+        "visitedAt": 1771919445177
+    }
+}

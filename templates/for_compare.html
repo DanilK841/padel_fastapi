@@ -196,7 +196,6 @@
             <span>📱</span> Показаны турниры, которые вы посещали на этом устройстве
         </div>
         <div id="tournaments-list">
-            <!-- Rendered by JS from localStorage -->
             <div class="empty-state" id="empty-state">
                 <div class="empty-icon">🎾</div>
                 <p>Создайте первый турнир</p>
@@ -251,8 +250,8 @@
         clearTimeout(toastTimer);
     };
 
-    function showToast() {
-        toastTxt.textContent = `Турнир больше не существует и был удалён из вашего списка.`;
+    function showToast(name) {
+        toastTxt.textContent = `Турнир «${name}» больше не существует и был удалён из вашего списка.`;
         toastEl.classList.add('visible');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(hideToast, 5000);
@@ -267,13 +266,10 @@
     }
 
     /* ── Navigate with 404 check ── */
-    window.navigateToTournament = async function(id, itemEl) {
+    window.navigateToTournament = async function(id, name, itemEl) {
         itemEl.classList.add('loading');
         try {
             const res = await fetch(`/tournament/${id}`, { method: 'HEAD' });
-            console.log('Status:', res.status, res.statusText);
-            console.log('URL:', res.url);
-
             if (res.ok) {
                 window.location.href = `/tournament/${id}`;
                 return;
@@ -293,7 +289,7 @@
                     if (!listEl.querySelector('.t-item')) emptyEl.style.display = 'block';
                 }, 300);
 
-                showToast();
+                showToast(name);
                 return;
             }
         } catch(e) {
@@ -339,16 +335,11 @@
 
         listEl.querySelectorAll('.t-item').forEach(el => el.remove());
 
-
         if (items.length === 0) {
             emptyEl.style.display = 'block';
             return;
         }
-
         emptyEl.style.display = 'none';
-
-        // Remove old items (keep only those inserted by JS)
-        listEl.querySelectorAll('.t-item').forEach(el => el.remove());
 
         items.forEach(t => {
             const sl  = statusLabel(t.status);
@@ -358,7 +349,7 @@
             div.dataset.id = t.id;
             div.innerHTML  = `
                 <div class="t-icon">🎾</div>
-                <div class="t-info" onclick="navigateToTournament('${t.id}', this.closest('.t-item'))">
+                <div class="t-info" onclick="navigateToTournament('${t.id}', ${JSON.stringify(t.name)}, this.closest('.t-item'))">
                     <div class="t-name">${nameEsc}</div>
                     <div class="t-meta">${t.playerCount} игроков · ${t.courts} корт(а) · Раунд ${t.currentRound + 1}/${t.totalRounds} · ${timeAgo(t.visitedAt)}</div>
                 </div>

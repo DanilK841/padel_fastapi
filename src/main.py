@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi import FastAPI, Request, Form, HTTPException, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -57,6 +57,13 @@ async def create_tournament(
     
     tournaments_db[tid] = tournament
     return RedirectResponse(f"/tournament/{tid}", status_code=303)
+
+@app.head("/tournament/{tid}")
+async def tournament_view(request: Request, tid: str):
+    t = tournaments_db.get(tid)
+    if not t:
+        raise HTTPException(status_code=404, detail="Tournament not found")
+    return Response(status_code=200)
 
 @app.get("/tournament/{tid}", response_class=HTMLResponse)
 async def tournament_view(request: Request, tid: str):

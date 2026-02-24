@@ -551,5 +551,37 @@ function toggleHistoryEdit(matchId) {
     const form = document.getElementById('history-edit-' + matchId);
     form.classList.toggle('visible');
 }
+
+<!-- Cache this tournament visit in localStorage -->
+
+(function() {
+    const CACHE_KEY = 'padel_tournaments';
+    const tData = {
+        id: {{ tournament.id | tojson }},
+        name: {{ tournament.name | tojson }},
+        status: {{ tournament.status | tojson }},
+        playerCount: {{ tournament.players | length }},
+        courts: {{ tournament.courts }},
+        currentRound: {{ tournament.current_round }},
+        totalRounds: {{ total_rounds }},
+        visitedAt: Date.now()
+    };
+
+    try {
+        let cached = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+        cached[tData.id] = tData;
+
+        // Keep only the 5 most recently visited tournaments
+        const entries = Object.values(cached).sort((a, b) => b.visitedAt - a.visitedAt);
+        if (entries.length > 5) {
+            cached = {};
+            entries.slice(0, 5).forEach(t => { cached[t.id] = t; });
+        }
+
+        localStorage.setItem(CACHE_KEY, JSON.stringify(cached));
+    } catch(e) {
+        console.warn('Failed to cache tournament:', e);
+    }
+})();
 </script>
 {% endblock %}
