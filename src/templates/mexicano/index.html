@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Padel Americano — Турниры{% endblock %}
+{% block title %}Padel Mexicano — Турниры{% endblock %}
+{% block nav_mx %}active-mexicano{% endblock %}
 
 {% block extra_styles %}
 <style>
@@ -12,14 +13,14 @@
     font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--accent-mx);
     margin-bottom: 1rem;
 }
 .hero h1 {
     font-size: 5rem;
     line-height: 0.95;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, var(--text) 60%, var(--accent));
+    background: linear-gradient(135deg, var(--text) 60%, var(--accent-mx));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -50,7 +51,7 @@
     transition: opacity 0.2s;
 }
 .t-item:last-child { border-bottom: none; }
-.t-item:hover .t-name { color: var(--accent); }
+.t-item:hover .t-name { color: var(--accent-mx); }
 .t-item.loading { opacity: 0.45; pointer-events: none; }
 .t-icon {
     width: 44px; height: 44px;
@@ -117,11 +118,15 @@
 .badge-finished-js { background: rgba(69,245,180,0.15);  color: var(--accent2); border: 1px solid var(--accent2); }
 .badge-setup-js    { background: rgba(107,114,128,0.2);  color: var(--muted);   border: 1px solid var(--border); }
 
+/* Mexicano accent overrides */
+input:focus, textarea:focus, select:focus { border-color: var(--accent-mx); }
+.btn-submit { background: var(--accent-mx); color: #0a0c0f; }
+.btn-submit:hover { background: #f7b84a; transform: translateY(-1px); }
+
 /* Toast */
 .toast {
     position: fixed;
-    bottom: 2rem;
-    left: 50%;
+    bottom: 2rem; left: 50%;
     transform: translateX(-50%) translateY(calc(100% + 3rem));
     background: var(--surface);
     border: 1px solid var(--danger);
@@ -136,48 +141,53 @@
     max-width: 400px;
     width: calc(100% - 3rem);
 }
-.toast.visible {
-    transform: translateX(-50%) translateY(0);
-}
+.toast.visible { transform: translateX(-50%) translateY(0); }
 .toast-icon { font-size: 1.35rem; flex-shrink: 0; margin-top: 0.05rem; }
 .toast-body { flex: 1; min-width: 0; }
 .toast-title { font-weight: 700; font-size: 0.88rem; color: var(--danger); margin-bottom: 0.25rem; }
 .toast-text  { font-size: 0.8rem; color: var(--muted); line-height: 1.45; word-break: break-word; }
-.toast-close {
-    background: none; border: none;
-    color: var(--muted); cursor: pointer;
-    font-size: 1rem; padding: 0.15rem;
-    flex-shrink: 0; line-height: 1;
-    transition: color 0.15s;
-}
+.toast-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 0.15rem; flex-shrink: 0; line-height: 1; transition: color 0.15s; }
 .toast-close:hover { color: var(--text); }
+
+/* Difference callout */
+.diff-callout {
+    background: rgba(245,166,35,0.07);
+    border: 1px solid rgba(245,166,35,0.25);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+}
+.diff-callout strong { color: var(--accent-mx); }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="hero animate">
-    <div class="hero-eyebrow">🎾 Система американо</div>
-    <h1>PADEL<br>AMERICANO</h1>
-    <p>Генератор турниров с автоматической ротацией партнёров и соперников по системе Американо.</p>
+    <div class="hero-eyebrow">🌮 Система мексикано</div>
+    <h1>PADEL<br>MEXICANO</h1>
+    <p>Турниры, где пары формируются по рейтингу — равные играют против равных после каждого раунда.</p>
 </div>
 
 <div class="card animate" style="animation-delay: 0.3s; margin-top: 2rem">
-    <div class="section-title">Как работает Американо</div>
+    <div class="section-title">Как работает Мексикано</div>
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem">
         <div>
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">🔄</div>
-            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Ротация</strong>
-            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">После каждого раунда партнёры и соперники меняются — каждый играет со всеми.</p>
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">📊</div>
+            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">По рейтингу</strong>
+            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">Перед каждым раундом игроки сортируются по очкам: 1-й и 2-й играют вместе против 3-го и 4-го.</p>
         </div>
         <div>
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">🏅</div>
-            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Очки</strong>
-            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">Игроки набирают очки равные количеству выигранных геймов. Гейм - один розыгрыш. Итог — личный зачёт.</p>
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">⚖️</div>
+            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Балансировка</strong>
+            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">Матчи становятся всё более сбалансированными — сильные играют против сильных, слабые против слабых.</p>
         </div>
         <div>
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">👥</div>
-            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Социально</strong>
-            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">Идеально для клубных дней — каждый познакомится с каждым участником.</p>
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">🏁</div>
+            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Заданное число раундов</strong>
+            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">В отличие от Американо, вы заранее задаёте количество раундов. Следующий раунд генерируется после завершения текущего.</p>
         </div>
     </div>
 </div>
@@ -185,29 +195,28 @@
 <div class="create-section">
     <div class="card animate" style="animation-delay: 0.1s">
         <div class="section-title">Новый турнир</div>
-        <form action="/tournament/create" method="post">
-            
+        <form action="/mexicano/create" method="post">
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem">
                 <div class="form-group">
                     <label>Название турнира</label>
-                    <input type="text" name="name" placeholder="Кубок выходного дня" required>
+                    <input type="text" name="name" placeholder="Мексиканский кубок" required>
                 </div>
                 <div class="form-group">
                     <label>Кортов</label>
                     <input type="number" name="courts" value="2" min="1" max="8" required>
                 </div>
-                <!--<div class="form-group">
-                    <label>Раундов</label>
-                    <input type="number" name="num_rounds" value="6" min="1" max="20" required>
-                </div>-->
+            </div>
+            <div class="form-group">
+                <label>Раундов</label>
+                <input type="number" name="num_rounds" value="6" min="1" max="20" required>
             </div>
             <div class="form-group">
                 <label>Игроки (каждый с новой строки)</label>
                 <textarea name="player_names" rows="8" placeholder="Алексей&#10;Мария&#10;Дмитрий&#10;Анна&#10;Сергей&#10;Елена&#10;Павел&#10;Ольга" required></textarea>
                 <div style="font-size:0.75rem; color: var(--muted); margin-top:0.4rem">Минимум 4 игрока, кратно 4 рекомендуется</div>
             </div>
-            <button type="submit" class="btn btn-primary" style="width:100%">
-                🏆 Создать турнир
+            <button type="submit" class="btn btn-submit" style="width:100%">
+                🌮 Создать турнир
             </button>
         </form>
     </div>
@@ -215,19 +224,17 @@
     <div class="card animate" style="animation-delay: 0.2s">
         <div class="section-title">Турниры</div>
         <div class="cache-hint">
-            <span>📱</span> Показаны 5 последних турниров, которые вы посещали на этом устройстве
+            <span>📱</span> Показаны 5 последних турниров Мексикано, которые вы посещали на этом устройстве
         </div>
         <div id="tournaments-list">
-            <!-- Rendered by JS from localStorage -->
             <div class="empty-state" id="empty-state">
-                <div class="empty-icon">🎾</div>
-                <p>Создайте первый турнир</p>
+                <div class="empty-icon">🌮</div>
+                <p>Создайте первый турнир Мексикано</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Toast notification -->
 <div class="toast" id="toast" role="alert" aria-live="assertive">
     <div class="toast-icon">🗑️</div>
     <div class="toast-body">
@@ -239,27 +246,25 @@
 
 <script>
 (function() {
-    const CACHE_KEY = 'padel_tournaments';
+    const CACHE_KEY = 'padel_mexicano_tournaments';
     const listEl   = document.getElementById('tournaments-list');
     const emptyEl  = document.getElementById('empty-state');
     const toastEl  = document.getElementById('toast');
     const toastTxt = document.getElementById('toast-text');
     let toastTimer = null;
 
-    /* ── Toast ── */
     window.hideToast = function() {
         toastEl.classList.remove('visible');
         clearTimeout(toastTimer);
     };
 
     function showToast() {
-        toastTxt.textContent = `Турнир больше не существует и был удалён из вашего списка.`;
+        toastTxt.textContent = 'Турнир больше не существует и был удалён из вашего списка.';
         toastEl.classList.add('visible');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(hideToast, 5000);
     }
 
-    /* ── Storage helpers ── */
     function getCached() {
         try { return JSON.parse(localStorage.getItem(CACHE_KEY) || '{}'); } catch(e) { return {}; }
     }
@@ -267,22 +272,15 @@
         try { localStorage.setItem(CACHE_KEY, JSON.stringify(obj)); } catch(e) {}
     }
 
-    /* ── Navigate with 404 check ── */
     window.navigateToTournament = async function(id, itemEl) {
         itemEl.classList.add('loading');
         try {
-            const res = await fetch(`/tournament/${id}`, { method: 'HEAD' });
-            if (res.ok) {
-                window.location.href = `/tournament/${id}`;
-                return;
-            }
+            const res = await fetch(`/mexicano/${id}`, { method: 'HEAD' });
+            if (res.ok) { window.location.href = `/mexicano/${id}`; return; }
             if (res.status === 404) {
-                // Remove from cache
                 const cached = getCached();
                 delete cached[id];
                 setCached(cached);
-
-                // Animate item out
                 itemEl.style.transition = 'opacity 0.3s, transform 0.3s';
                 itemEl.style.opacity = '0';
                 itemEl.style.transform = 'translateX(14px)';
@@ -290,17 +288,13 @@
                     itemEl.remove();
                     if (!listEl.querySelector('.t-item')) emptyEl.style.display = 'block';
                 }, 300);
-
                 showToast();
                 return;
             }
-        } catch(e) {
-            // Network error — navigate and let server respond
-        }
-        window.location.href = `/tournament/${id}`;
+        } catch(e) {}
+        window.location.href = `/mexicano/${id}`;
     };
 
-    /* ── Remove manually ── */
     window.removeFromCache = function(id, e) {
         e.stopPropagation();
         const cached = getCached();
@@ -309,7 +303,6 @@
         render();
     };
 
-    /* ── Helpers ── */
     function statusLabel(status) {
         if (status === 'active')   return { text: 'Активен',  cls: 'badge-active-js' };
         if (status === 'finished') return { text: 'Завершён', cls: 'badge-finished-js' };
@@ -330,32 +323,20 @@
         return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    /* ── Render ── */
     function render() {
         const cached = getCached();
         const items  = Object.values(cached).sort((a, b) => b.visitedAt - a.visitedAt);
-
         listEl.querySelectorAll('.t-item').forEach(el => el.remove());
-
-
-        if (items.length === 0) {
-            emptyEl.style.display = 'block';
-            return;
-        }
-
+        if (items.length === 0) { emptyEl.style.display = 'block'; return; }
         emptyEl.style.display = 'none';
-
-        // Remove old items (keep only those inserted by JS)
-        listEl.querySelectorAll('.t-item').forEach(el => el.remove());
-
         items.forEach(t => {
-            const sl  = statusLabel(t.status);
+            const sl = statusLabel(t.status);
             const nameEsc = escHtml(t.name);
             const div = document.createElement('div');
             div.className  = 't-item';
             div.dataset.id = t.id;
             div.innerHTML  = `
-                <div class="t-icon">🎾</div>
+                <div class="t-icon">🌮</div>
                 <div class="t-info" onclick="navigateToTournament('${t.id}', this.closest('.t-item'))">
                     <div class="t-name">${nameEsc}</div>
                     <div class="t-meta">${t.playerCount} игроков · ${t.courts} корт(а) · Раунд ${t.currentRound + 1}/${t.totalRounds} · ${timeAgo(t.visitedAt)}</div>
@@ -366,7 +347,6 @@
             listEl.appendChild(div);
         });
     }
-
     render();
 })();
 </script>

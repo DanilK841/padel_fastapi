@@ -52,6 +52,50 @@
             text-decoration: none;
         }
         .logo span { color: var(--text); }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            flex: 1;
+        }
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: 7px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            text-decoration: none;
+            color: var(--muted);
+            transition: all 0.15s;
+            border: 1px solid transparent;
+        }
+        .nav-link:hover {
+            color: var(--text);
+            background: var(--surface2);
+            border-color: var(--border);
+        }
+        .nav-link.active-americano {
+            color: var(--accent);
+            background: rgba(200,245,69,0.1);
+            border-color: rgba(200,245,69,0.3);
+        }
+        .nav-link.active-mexicano {
+            color: var(--accent-mx);
+            background: rgba(245,166,35,0.1);
+            border-color: rgba(245,166,35,0.3);
+        }
+        .nav-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .nav-dot-am { background: var(--accent); }
+        .nav-dot-mx { background: var(--accent-mx); }
+        
         main {
             max-width: 1100px;
             margin: 0 auto;
@@ -88,6 +132,11 @@
             color: #0a0c0f;
         }
         .btn-primary:hover { background: #d4f85a; transform: translateY(-1px); }
+        .btn-primary-mx {
+            background: var(--accent-mx);
+            color: #0a0c0f;
+        }
+        .btn-primary-mx:hover { background: #f7b84a; transform: translateY(-1px); }
         .btn-secondary {
             background: var(--surface2);
             color: var(--text);
@@ -149,6 +198,16 @@
     <div class="noise"></div>
     <nav>
         <a href="/" class="logo">PADEL<span>CHAMP</span></a>
+        <div class="nav-links">
+            <a href="/americano" class="nav-link {% block nav_am %}{% endblock %}">
+                <span class="nav-dot nav-dot-am"></span>
+                Американо
+            </a>
+            <a href="/mexicano" class="nav-link {% block nav_mx %}{% endblock %}">
+                <span class="nav-dot nav-dot-mx"></span>
+                Мексикано
+            </a>
+        </div>
     </nav>
     <main>
         {% block content %}{% endblock %}

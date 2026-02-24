@@ -449,7 +449,7 @@ function copyUrl() {
 <div class="tournament-header animate">
     <div class="t-title-group">
         <div style="font-size:0.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem">
-            <a href="/" style="color:var(--muted); text-decoration:none">← Турниры</a>
+            <a href="/americano" style="color:var(--muted); text-decoration:none">← Турниры</a>
         </div>
         <h1>{{ tournament.name }}</h1>
         <div class="header-actions">
@@ -458,7 +458,7 @@ function copyUrl() {
                 {% elif tournament.status == 'finished' %}Завершён
                 {% else %}Настройка{% endif %}
             </span>
-            <form action="/tournament/{{ tournament.id }}/delete" method="post" onsubmit="return confirm('Удалить турнир?')">
+            <form action="/americano/tournament/{{ tournament.id }}/delete" method="post" onsubmit="return confirm('Удалить турнир?')">
                 <button type="submit" class="btn btn-danger" style="padding: 0.35rem 0.9rem; font-size:0.8rem">✕ Удалить</button>
             </form>
         </div>
@@ -541,7 +541,7 @@ function copyUrl() {
                         </button>
                     </div>
                     <div class="edit-score-form" id="edit-form-{{ match.id }}">
-                        <form method="post" action="/tournament/{{ tournament.id }}/edit-score">
+                        <form method="post" action="/americano/tournament/{{ tournament.id }}/edit-score">
                             <input type="hidden" name="match_id" value="{{ match.id }}">
                             <div class="score-inputs">
                                 <input type="number" name="score1" class="score-input" value="{{ match.score1 }}" min="0" max="99" required>
@@ -555,7 +555,7 @@ function copyUrl() {
                         </form>
                     </div>
                     {% else %}
-                    <form class="score-form" method="post" action="/tournament/{{ tournament.id }}/score">
+                    <form class="score-form" method="post" action="/americano/tournament/{{ tournament.id }}/score">
                         <input type="hidden" name="match_id" value="{{ match.id }}">
                         <div class="score-inputs">
                             <input type="number" name="score1" class="score-input" placeholder="0" min="0" max="99" required>
@@ -574,13 +574,13 @@ function copyUrl() {
         {% set all_done = current_matches | selectattr('completed') | list | length == current_matches | length %}
         {% if current_matches and all_done %}
         <div class="grid-2">
-            <form method="post" action="/tournament/{{ tournament.id }}/finish" style="margin-top:1rem">
+            <form method="post" action="/americano/tournament/{{ tournament.id }}/finish" style="margin-top:1rem">
                 <button type="submit" class="btn btn-primary">
                     🏁 Завершить турнир
                 </button>
             </form>
             {% if tournament.current_round + 1 < total_rounds %}
-            <form method="post" action="/tournament/{{ tournament.id }}/next-round" style="margin-top:1rem">
+            <form method="post" action="/americano/tournament/{{ tournament.id }}/next-round" style="margin-top:1rem">
                 <button type="submit" class="btn btn-primary">
                     ➡ Следующий раунд
                 </button>
@@ -654,7 +654,7 @@ function copyUrl() {
                         onmouseout="this.style.color='var(--muted)'">✏</button>
                 </div>
                 <div class="history-edit-form" id="history-edit-{{ match.id }}">
-                    <form method="post" action="/tournament/{{ tournament.id }}/edit-score">
+                    <form method="post" action="/americano/tournament/{{ tournament.id }}/edit-score">
                         <input type="hidden" name="match_id" value="{{ match.id }}">
                         <div class="history-score-inputs">
                             <input type="number" name="score1" class="score-input history-score-input" value="{{ match.score1 }}" min="0" max="99" required>
