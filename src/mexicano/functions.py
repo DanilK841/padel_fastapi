@@ -30,7 +30,7 @@ def generate_mexicano_round(tournament: 'Tournament', num_round: int) -> List[Ma
     while i + 3 < len(active) and court <= courts:
         # Top two partner together (rank i+1 and i+2)
         # vs next two (rank i+3 and i+4)
-        p1, p2, p3, p4 = active[i], active[i+1], active[i+2], active[i+3]
+        p1, p2, p3, p4 = active[i], active[i+2], active[i+1], active[i+3]
         match = Match(
             id=f"r{num_round+1}m{match_id}",
             round=num_round + 1,
