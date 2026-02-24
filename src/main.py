@@ -35,7 +35,7 @@ async def create_tournament(
     names = [n.strip() for n in player_names.split("\n") if n.strip()]
     
     if len(names) < 4:
-        raise HTTPException(status_code=400, detail="Minimum 4 players required")
+        raise HTTPException(status_code=400, detail="Введите минимум 4 имени")
     
     players = {}
     player_ids = []
@@ -140,3 +140,64 @@ async def next_round(tid: str):
 async def delete_tournament(tid: str):
     tournaments_db.pop(tid, None)
     return RedirectResponse("/", status_code=303)
+
+@app.post("/tournament/{tid}/edit-score")
+async def edit_score(
+    request: Request,
+    tid: str,
+    match_id: str = Form(...),
+    score1: int = Form(...),
+    score2: int = Form(...)
+):
+    t = tournaments_db.get(tid)
+    if not t:
+        raise HTTPException(status_code=404)
+    
+    # Find match in any round
+    for round_matches in t.rounds:
+        for match in round_matches:
+            if match.id == match_id and match.completed:
+                old_score1 = match.score1
+                old_score2 = match.score2
+
+                # Revert old stats
+                for pid in match.team1:
+                    p = t.players[pid]
+                    p.points -= old_score1
+                    if old_score1 > old_score2:
+                        p.games_won -= 1
+                    else:
+                        p.games_lost -= 1
+
+                for pid in match.team2:
+                    p = t.players[pid]
+                    p.points -= old_score2
+                    if old_score2 > old_score1:
+                        p.games_won -= 1
+                    else:
+                        p.games_lost -= 1
+
+                # Apply new stats
+                match.score1 = score1
+                match.score2 = score2
+
+                for pid in match.team1:
+                    p = t.players[pid]
+                    p.points += score1
+                    if score1 > score2:
+                        p.games_won += 1
+                    else:
+                        p.games_lost += 1
+
+                for pid in match.team2:
+                    p = t.players[pid]
+                    p.points += score2
+                    if score2 > score1:
+                        p.games_won += 1
+                    else:
+                        p.games_lost += 1
+
+                return RedirectResponse(f"/tournament/{tid}", status_code=303)
+
+    return RedirectResponse(f"/tournament/{tid}", status_code=303)
+
