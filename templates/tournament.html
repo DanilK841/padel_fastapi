@@ -36,6 +36,58 @@
 }
 .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem; }
 
+/* Share bar */
+.share-bar {
+    margin-bottom: 1.75rem;
+}
+.share-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.65rem 1rem;
+    transition: border-color 0.15s;
+}
+.share-inner:hover { border-color: rgba(200,245,69,0.3); }
+.share-url {
+    flex: 1;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-family: 'Courier New', monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: all;
+}
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.35rem 0.8rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    flex-shrink: 0;
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn.copied { border-color: var(--accent2); color: var(--accent2); }
+.share-hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    padding-left: 0.25rem;
+    line-height: 1.5;
+}
+
 /* Court cards */
 .court-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
 .court-card {
@@ -310,6 +362,47 @@
     color: var(--text);
 }
 
+.share-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+}
+.share-url-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+.share-icon { font-size: 1rem; flex-shrink: 0; }
+.share-url {
+    flex: 1;
+    font-size: 0.85rem;
+    color: var(--accent);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.45rem 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.copy-btn {
+    flex-shrink: 0;
+    padding: 0.45rem 1rem;
+    font-size: 0.8rem;
+    gap: 0.4rem;
+}
+.copy-btn.copied {
+    border-color: var(--accent2);
+    color: var(--accent2);
+}
+.share-hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.5;
+    padding-left: 1.75rem;
+
 .img-45 {
     transform: rotate(135deg);
     /* Дополнительно: можно добавить отступы, чтобы углы не обрезались */
@@ -319,6 +412,39 @@
 {% endblock %}
 
 {% block content %}
+
+<!-- Share URL bar -->
+<div class="share-bar animate">
+    <div class="share-inner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent); flex-shrink:0"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <span class="share-url" id="tournamentUrl"></span>
+        <button class="copy-btn" onclick="copyUrl()" title="Скопировать ссылку">
+            <svg id="copyIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="copyLabel">Копировать</span>
+        </button>
+    </div>
+    <div class="share-hint">Отправьте эту ссылку участникам — они смогут следить за турниром и вводить счёт в реальном времени.</div>   
+</div>
+
+<script>
+document.getElementById('tournamentUrl').textContent = window.location.href;
+
+function copyUrl() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        const label = document.getElementById('copyLabel');
+        const icon = document.getElementById('copyIcon');
+        btn.classList.add('copied');
+        label.textContent = 'Скопировано!';
+        icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+        setTimeout(() => {
+            btn.classList.remove('copied');
+            label.textContent = 'Копировать';
+            icon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
+        }, 2000);
+    });
+}
+</script>
 
 <div class="tournament-header animate">
     <div class="t-title-group">
