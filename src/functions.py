@@ -41,6 +41,44 @@ def generate_americano_rounds(players: List[str], courts: int, num_rounds: int) 
     
     return rounds
 
+def generate_americano_round(players: List[str], courts: int, num_round: int) -> List[Match]:
+    """Generate Americano rounds where partners and opponents rotate."""
+    rounds = []
+    n = len(players)
+    
+    # Ensure even number of players
+    if n % 4 != 0:
+        # Pad if necessary (bye players)
+        while len(players) % 4 != 0:
+            players.append(None)
+            
+    active_players = [p for p in players if p]
+    # for round_num in range(num_rounds):
+    round_matches = []
+    available = active_players.copy()
+    random.shuffle(available)
+    
+    court = 1
+    match_id = 1
+    while len(available) >= 4 and court <= courts:
+        p1, p2, p3, p4 = available[:4]
+        available = available[4:]
+        
+        match = Match(
+            id=f"r{num_round+1}m{match_id}",
+            round=num_round + 1,
+            court=court,
+            team1=[p1, p2],
+            team2=[p3, p4]
+        )
+        round_matches.append(match)
+        court += 1
+        match_id += 1
+    
+    
+    rounds.append(round_matches)
+    return rounds
+
 def calculate_standings(tournament: Tournament) -> List[dict]:
     standings = []
     for pid, player in tournament.players.items():

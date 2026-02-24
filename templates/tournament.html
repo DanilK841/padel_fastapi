@@ -319,6 +319,7 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="tournament-header animate">
     <div class="t-title-group">
         <div style="font-size:0.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem">
@@ -351,6 +352,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Round progress -->
 <div class="round-indicator animate" style="animation-delay:0.15s">
@@ -445,15 +447,20 @@
         <!-- Next round button -->
         {% set all_done = current_matches | selectattr('completed') | list | length == current_matches | length %}
         {% if current_matches and all_done %}
-        <form method="post" action="/tournament/{{ tournament.id }}/next-round" style="margin-top:1rem">
-            <button type="submit" class="btn btn-primary">
-                {% if tournament.current_round + 1 < total_rounds %}
-                ➡ Следующий раунд
-                {% else %}
-                🏁 Завершить турнир
-                {% endif %}
-            </button>
-        </form>
+        <div class="grid-2">
+            <form method="post" action="/tournament/{{ tournament.id }}/finish" style="margin-top:1rem">
+                <button type="submit" class="btn btn-primary">
+                    🏁 Завершить турнир
+                </button>
+            </form>
+            {% if tournament.current_round + 1 < total_rounds %}
+            <form method="post" action="/tournament/{{ tournament.id }}/next-round" style="margin-top:1rem">
+                <button type="submit" class="btn btn-primary">
+                    ➡ Следующий раунд
+                </button>
+            </form>
+            {% endif %}
+        </div>    
         {% endif %}
         {% endif %}
     </div>

@@ -1,3 +1,5 @@
+from os import name
+
 from fastapi import FastAPI, Request, Form, HTTPException, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -5,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 
 from pathlib import Path
 
-from functions import generate_americano_rounds, calculate_standings
+from functions import generate_americano_round, generate_americano_round, calculate_standings, generate_americano_rounds
 from models import Player, Tournament, generate_id
 
 app = FastAPI(title="Padel Americano")
@@ -28,7 +30,6 @@ async def index(request: Request):
 async def create_tournament(
     name: str = Form(...),
     courts: int = Form(...),
-    num_rounds: int = Form(...),
     player_names: str = Form(...)
 ):
     tid = generate_id()
@@ -44,7 +45,7 @@ async def create_tournament(
         players[pid] = Player(id=pid, name=name)
         player_ids.append(pid)
     
-    rounds = generate_americano_rounds(player_ids, courts, num_rounds)
+    rounds = generate_americano_rounds(player_ids, courts, len(names) - 1)
     
     tournament = Tournament(
         id=tid,
@@ -72,6 +73,9 @@ async def tournament_view(request: Request, tid: str):
         raise HTTPException(status_code=404, detail="Tournament not found")
     
     standings = calculate_standings(t)
+
+    print(t)
+
     current_matches = t.rounds[t.current_round] if t.rounds and t.current_round < len(t.rounds) else []
     
     return templates.TemplateResponse("tournament.html", {
@@ -136,10 +140,19 @@ async def next_round(tid: str):
     # Check all matches in current round completed
     current = t.rounds[t.current_round]
     if all(m.completed for m in current):
-        if t.current_round + 1 < len(t.rounds):
-            t.current_round += 1
-        else:
-            t.status = "finished"
+        t.current_round += 1
+
+    return RedirectResponse(f"/tournament/{tid}", status_code=303)
+
+@app.post("/tournament/{tid}/finish")
+async def finish_tournament(tid: str):
+    t = tournaments_db.get(tid)
+    if not t:
+        raise HTTPException(status_code=404)
+    
+    current = t.rounds[t.current_round]
+    if all(m.completed for m in current):
+        t.status = "finished"
     
     return RedirectResponse(f"/tournament/{tid}", status_code=303)
 

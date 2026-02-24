@@ -5,7 +5,7 @@
 <style>
 .hero {
     text-align: center;
-    padding: 3rem 0 4rem;
+    padding: 3rem 0 0;
 }
 .hero-eyebrow {
     font-size: 0.8rem;
@@ -161,23 +161,45 @@
     <p>Генератор турниров с автоматической ротацией партнёров и соперников по системе Американо.</p>
 </div>
 
+<div class="card animate" style="animation-delay: 0.3s; margin-top: 2rem">
+    <div class="section-title">Как работает Американо</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem">
+        <div>
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">🔄</div>
+            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Ротация</strong>
+            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">После каждого раунда партнёры и соперники меняются — каждый играет со всеми.</p>
+        </div>
+        <div>
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">🏅</div>
+            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Очки</strong>
+            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">Игроки набирают очки равные количеству выигранных геймов. Гейм - один розыгрыш. Итог — личный зачёт.</p>
+        </div>
+        <div>
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">👥</div>
+            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Социально</strong>
+            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">Идеально для клубных дней — каждый познакомится с каждым участником.</p>
+        </div>
+    </div>
+</div>
+
 <div class="create-section">
     <div class="card animate" style="animation-delay: 0.1s">
         <div class="section-title">Новый турнир</div>
         <form action="/tournament/create" method="post">
-            <div class="form-group">
-                <label>Название турнира</label>
-                <input type="text" name="name" placeholder="Кубок выходного дня" required>
-            </div>
+            
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem">
+                <div class="form-group">
+                    <label>Название турнира</label>
+                    <input type="text" name="name" placeholder="Кубок выходного дня" required>
+                </div>
                 <div class="form-group">
                     <label>Кортов</label>
                     <input type="number" name="courts" value="2" min="1" max="8" required>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <label>Раундов</label>
                     <input type="number" name="num_rounds" value="6" min="1" max="20" required>
-                </div>
+                </div>-->
             </div>
             <div class="form-group">
                 <label>Игроки (каждый с новой строки)</label>
@@ -193,7 +215,7 @@
     <div class="card animate" style="animation-delay: 0.2s">
         <div class="section-title">Турниры</div>
         <div class="cache-hint">
-            <span>📱</span> Показаны турниры, которые вы посещали на этом устройстве
+            <span>📱</span> Показаны 5 последних турниров, которые вы посещали на этом устройстве
         </div>
         <div id="tournaments-list">
             <!-- Rendered by JS from localStorage -->
@@ -201,27 +223,6 @@
                 <div class="empty-icon">🎾</div>
                 <p>Создайте первый турнир</p>
             </div>
-        </div>
-    </div>
-</div>
-
-<div class="card animate" style="animation-delay: 0.3s; margin-top: 2rem">
-    <div class="section-title">Как работает Американо</div>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem">
-        <div>
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">🔄</div>
-            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Ротация</strong>
-            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">После каждого раунда партнёры и соперники меняются — каждый играет со всеми.</p>
-        </div>
-        <div>
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">🏅</div>
-            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Очки</strong>
-            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">Игроки набирают очки равные количеству выигранных геймов. Итог — личный зачёт.</p>
-        </div>
-        <div>
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem">👥</div>
-            <strong style="font-size: 0.9rem; display:block; margin-bottom:0.3rem">Социально</strong>
-            <p style="font-size: 0.85rem; color: var(--muted); line-height:1.5">Идеально для клубных дней — каждый познакомится с каждым участником.</p>
         </div>
     </div>
 </div>
@@ -271,9 +272,6 @@
         itemEl.classList.add('loading');
         try {
             const res = await fetch(`/tournament/${id}`, { method: 'HEAD' });
-            console.log('Status:', res.status, res.statusText);
-            console.log('URL:', res.url);
-
             if (res.ok) {
                 window.location.href = `/tournament/${id}`;
                 return;
