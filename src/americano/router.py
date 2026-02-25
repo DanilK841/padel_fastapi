@@ -7,7 +7,7 @@ from americano.models import Player, Tournament, Match, generate_id
 from americano.functions import generate_americano_rounds, calculate_standings
 
 router = APIRouter(prefix='/americano', tags=['Американо'])
-templates = Jinja2Templates(directory="templates/americano")
+templates = Jinja2Templates(directory="templates")
 # In-memory storage (could be replaced with DB)
 # tournaments_db: dict = {}
 
@@ -64,7 +64,7 @@ def _update_player_stats(
 
 @router.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {
+    return templates.TemplateResponse("americano/index.html", {
         "request": request
     })
 
@@ -127,7 +127,7 @@ async def tournament_view(request: Request, tid: str, session: AsyncSession = De
     standings = calculate_standings(t)
     current_matches = t.rounds[t.current_round] if t.rounds and t.current_round < len(t.rounds) else []
     
-    return templates.TemplateResponse("tournament.html", {
+    return templates.TemplateResponse("americano/tournament.html", {
         "request": request,
         "tournament": t,
         "standings": standings,

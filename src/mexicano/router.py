@@ -7,7 +7,7 @@ from mexicano.functions import generate_mexicano_round, calculate_standings
 from database import get_session, TournamentORM, PlayerORM, MatchORM
 
 router = APIRouter(prefix='/mexicano', tags=['Мексикано'])
-templates = Jinja2Templates(directory="templates/mexicano")
+templates = Jinja2Templates(directory="templates")
 # In-memory storage (could be replaced with DB)
 
 
@@ -74,7 +74,7 @@ def _add_round_to_session(session: AsyncSession, tid: str, matches: list[Match])
 
 @router.get("/", response_class=HTMLResponse)
 async def mexicano_index(request: Request, ):
-    return templates.TemplateResponse("index.html", {
+    return templates.TemplateResponse("mexicano/index.html", {
         "request": request,
     })
 
@@ -133,7 +133,7 @@ async def mexicano_view(request: Request, tid: str, session: AsyncSession = Depe
     standings = calculate_standings(t)
     current_matches = t.rounds[t.current_round] if t.rounds and t.current_round < len(t.rounds) else []
 
-    return templates.TemplateResponse("tournament.html", {
+    return templates.TemplateResponse("mexicano/tournament.html", {
         "request": request,
         "tournament": t,
         "standings": standings,
