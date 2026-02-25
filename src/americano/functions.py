@@ -1,5 +1,5 @@
 import json, random, math
-from americano.models import Match, Tournament
+from americano.models import Match, Tournament, generate_id
 from typing import List
 
 def generate_americano_rounds(players: List[str], courts: int, num_rounds: int) -> List[List[Match]]:
@@ -21,13 +21,12 @@ def generate_americano_rounds(players: List[str], courts: int, num_rounds: int) 
         random.shuffle(available)
         
         court = 1
-        match_id = 1
         while len(available) >= 4 and court <= courts:
             p1, p2, p3, p4 = available[:4]
             available = available[4:]
-            
+            match_id = generate_id()
             match = Match(
-                id=f"r{round_num+1}m{match_id}",
+                id=match_id,
                 round=round_num + 1,
                 court=court,
                 team1=[p1, p2],
@@ -35,7 +34,6 @@ def generate_americano_rounds(players: List[str], courts: int, num_rounds: int) 
             )
             round_matches.append(match)
             court += 1
-            match_id += 1
         
         rounds.append(round_matches)
     
@@ -94,3 +92,4 @@ def calculate_standings(tournament: Tournament) -> List[dict]:
     for i, s in enumerate(standings):
         s["rank"] = i + 1
     return standings
+

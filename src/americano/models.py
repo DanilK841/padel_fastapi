@@ -9,6 +9,7 @@ def generate_id():
 class Player:
     id: str
     name: str
+    sex: str
     points: int = 0
     games_played: int = 0
     games_won: int = 0
