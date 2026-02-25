@@ -128,6 +128,20 @@ async def tournament_view(request: Request, tid: str, session: AsyncSession = De
     t = _orm_to_tournament(t_orm)
     standings = calculate_standings(t)
     current_matches = t.rounds[t.current_round] if t.rounds and t.current_round < len(t.rounds) else []
+
+    # Добавляем безопасную для JSON версию игроков
+    players_json_safe = {
+        pid: {
+            "id": player.id,
+            "name": player.name,
+            # "sex": player.sex,     # если нужен пол — раскомментируйте
+            "points": player.points,
+            "games_played": player.games_played,
+            "games_won": player.games_won,
+            "games_lost": player.games_lost,
+        }
+        for pid, player in t.players.items()
+    }
     
     return templates.TemplateResponse("americano/tournament.html", {
         "request": request,
@@ -135,6 +149,7 @@ async def tournament_view(request: Request, tid: str, session: AsyncSession = De
         "standings": standings,
         "current_matches": current_matches,
         "players": t.players,
+        "players_json": players_json_safe,
         "total_rounds": len(t.rounds),
     })
 
@@ -247,3 +262,80 @@ async def edit_score(
 
     return RedirectResponse(f"/americano/tournament/{tid}", status_code=303)
 
+@router.post("/tournament/{tid}/swap-player")
+async def swap_player(
+    tid: str,
+    match_id: str = Form(...),
+    position: str = Form(...),      # team1-0, team2-1 и т.д.
+    new_pid: str = Form(...),
+    session: AsyncSession = Depends(get_session),
+):
+
+
+    print("=== SWAP PLAYER DEBUG ===")
+    print(f"tid       : {tid}")
+    print(f"match_id  : {match_id}")
+    print(f"position  : {position}")
+    print(f"new_pid   : {new_pid}")
+    print("========================")
+
+    t_orm = await _get_tournament_orm(tid, session)
+
+    if t_orm.status != "active":
+        raise HTTPException(status_code=400, detail="Турнир не активен")
+
+    current_round_num = t_orm.current_round + 1
+
+    # Целевой матч
+    target_match_orm = next(
+        (m for m in t_orm.matches if m.id == match_id and m.round == current_round_num),
+        None
+    )
+    
+    print(f"→ Матч найден: {target_match_orm.id}, round={target_match_orm.round}, completed={target_match_orm.completed}")
+
+    if not target_match_orm or target_match_orm.completed:
+        raise HTTPException(status_code=400, detail="Матч не найден или уже завершён")
+
+    # Парсим позицию
+    try:
+        team_key, idx_str = position.split("-")
+        idx = int(idx_str)
+        if team_key not in ("team1", "team2") or idx not in (0, 1):
+            raise ValueError
+    except Exception:
+        raise HTTPException(status_code=400, detail="Неверная позиция")
+
+    old_pid = getattr(target_match_orm, team_key)[idx]
+    if old_pid == new_pid:
+        return RedirectResponse(f"/americano/tournament/{tid}", status_code=303)
+
+    # Поиск позиции выбранного игрока
+    def find_position(pid: str):
+        for m in t_orm.matches:
+            if m.round == current_round_num:
+                for tk in ("team1", "team2"):
+                    tlist = getattr(m, tk)
+                    if pid in tlist:
+                        return m, tk, tlist.index(pid)
+        return None, None, None
+
+    new_match, new_tk, new_i = find_position(new_pid)
+
+    # для целевого матча
+    old_team = getattr(target_match_orm, team_key)          # берём текущий список
+    new_team = old_team.copy()                              # копируем
+    new_team[idx] = new_pid                                 # меняем
+    setattr(target_match_orm, team_key, new_team)           # присваиваем новый объект списка
+
+    # если есть второй матч (swap)
+    if new_match is not None:
+        old_team2 = getattr(new_match, new_tk)
+        new_team2 = old_team2.copy()
+        new_team2[new_i] = old_pid
+        setattr(new_match, new_tk, new_team2)
+
+    await session.commit()
+    print('logg '+str(idx_str))
+
+    return RedirectResponse(f"/americano/tournament/{tid}", status_code=303)

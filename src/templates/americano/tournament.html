@@ -110,14 +110,32 @@ function copyUrl() {
                         <div class="team">
                             <div class="team-label">Команда 1</div>
                             {% for pid in match.team1 %}
-                            <div class="player-name">{{ tournament.players[pid].name }}</div>
+                            <div class="player-name">
+                            {{ tournament.players[pid].name }}
+                            {% if not match.completed %}
+                            <button type="button" class="edit-player-btn"
+                                    data-match-id="{{ match.id }}"
+                                    data-position="team1-{{ loop.index0 }}"
+                                    data-pid="{{ pid }}"
+                                    title="Изменить игрока">✏</button>
+                            {% endif %}
+                            </div>
                             {% endfor %}
                         </div>
                         <div class="vs-divider">VS</div>
                         <div class="team">
                             <div class="team-label">Команда 2</div>
                             {% for pid in match.team2 %}
-                            <div class="player-name">{{ tournament.players[pid].name }}</div>
+                            <div class="player-name">
+                                {{ tournament.players[pid].name }}
+                                {% if not match.completed %}
+                                <button type="button" class="edit-player-btn"
+                                        data-match-id="{{ match.id }}"
+                                        data-position="team2-{{ loop.index0 }}"
+                                        data-pid="{{ pid }}"
+                                        title="Изменить игрока">✏</button>
+                                {% endif %}
+                            </div>
                             {% endfor %}
                         </div>
                     </div>
@@ -266,6 +284,87 @@ function copyUrl() {
     {% endfor %}
 </div>
 {% endif %}
+
+<!-- === PLAYER SWAP MODAL === -->
+<div id="swap-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeSwapModal()">×</span>
+        <h3>Выберите игрока для замены</h3>
+        <div id="modal-players" class="modal-players"></div>
+    </div>
+</div>
+<script>
+const tournamentId = "{{ tournament.id }}";
+const allPlayers = {{ players_json | tojson }};
+
+let currentMatchId = null;
+let currentPosition = null;
+let currentOldPid = null;
+
+function openSwapModal(matchId, position, oldPid) {
+    currentMatchId = matchId;
+    currentPosition = position;
+    currentOldPid = oldPid;
+
+    const container = document.getElementById("modal-players");
+    container.innerHTML = "";
+
+    Object.values(allPlayers).forEach(player => {
+        const div = document.createElement("div");
+        div.className = "player-option" + (player.id === oldPid ? " current" : "");
+        div.textContent = player.name + (player.id === oldPid ? " (текущий)" : "");
+        div.onclick = () => {
+            if (player.id !== oldPid) performSwap(player.id);
+        };
+        container.appendChild(div);
+    });
+
+    document.getElementById("swap-modal").style.display = "flex";
+}
+
+function closeSwapModal() {
+    document.getElementById("swap-modal").style.display = "none";
+}
+
+async function performSwap(newPid) {
+    closeSwapModal();
+
+    const fd = new FormData();
+    fd.append("match_id", currentMatchId);
+    fd.append("position", currentPosition);
+    fd.append("new_pid", newPid);
+
+    try {
+        const res = await fetch(`/americano/tournament/${tournamentId}/swap-player`, {
+            method: "POST",
+            body: fd
+        });
+
+        if (res.redirected) {
+            window.location.href = res.url;
+        } else if (res.ok) {
+            window.location.reload();
+        } else {
+            alert("Ошибка: " + (await res.text()));
+        }
+    } catch (e) {
+        alert("Ошибка соединения");
+    }
+}
+
+// Привязываем кнопки (выполняется после загрузки страницы)
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".edit-player-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            openSwapModal(
+                btn.dataset.matchId,
+                btn.dataset.position,
+                btn.dataset.pid
+            );
+        });
+    });
+});
+</script>
 
 <script>
 function toggleEdit(matchId) {
