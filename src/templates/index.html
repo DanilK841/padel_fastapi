@@ -1,0 +1,687 @@
+{% extends "base.html" %}
+{% block title %}Правила — Americano & Mexicano{% endblock %}
+
+{% block extra_styles %}
+<style>
+
+/* ── Hero ── */
+.rules-hero {
+    text-align: center;
+    padding: 3.5rem 0 2rem;
+    position: relative;
+}
+.rules-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(200,245,69,0.07) 0%, transparent 70%);
+    pointer-events: none;
+}
+.rules-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+.rules-hero h1 {
+    font-size: 5.5rem;
+    line-height: 0.9;
+    margin-bottom: 1.25rem;
+    background: linear-gradient(135deg, var(--text) 50%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.rules-hero p {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.65;
+}
+
+/* ── Format tabs ── */
+.format-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin: 2.5rem 0 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.4rem;
+}
+.tab-btn {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.tab-btn.active {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+.tab-btn:hover:not(.active) { color: var(--text); }
+.tab-btn .tab-icon { font-size: 1rem; margin-right: 0.4rem; }
+
+/* ── Content panels ── */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+/* ── Format header ── */
+.format-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+.format-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+}
+.format-header.mexicano::before {
+    background: linear-gradient(90deg, var(--accent2), transparent);
+}
+.format-big-icon {
+    font-size: 3.5rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.format-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+}
+.format-tagline {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+/* ── Rules sections ── */
+.rules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+@media (max-width: 700px) {
+    .rules-grid { grid-template-columns: 1fr; }
+    .rules-hero h1 { font-size: 3.5rem; }
+    .format-header { flex-direction: column; text-align: center; }
+}
+.rule-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+.rule-card:hover { border-color: rgba(200,245,69,0.25); }
+.rule-card.mexicano-card:hover { border-color: rgba(69,245,180,0.25); }
+.rule-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    position: absolute;
+    top: -0.5rem; right: 0.75rem;
+    color: rgba(255,255,255,0.03);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+}
+.rule-icon { font-size: 1.5rem; margin-bottom: 0.6rem; display: block; }
+.rule-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+}
+.rule-card.mexicano-card .rule-title { color: var(--accent2); }
+.rule-text {
+    font-size: 0.87rem;
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+/* ── Scoring visual ── */
+.scoring-visual {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+}
+.scoring-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 1.25rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.scoring-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+.match-example {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+}
+.match-team {
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.match-team.right { text-align: right; }
+.match-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    white-space: nowrap;
+}
+.pts-breakdown {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+}
+.pts-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(200,245,69,0.08);
+    border: 1px solid rgba(200,245,69,0.2);
+    border-radius: 20px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text);
+}
+.pts-chip .pts-name { color: var(--muted); }
+.pts-chip .pts-val { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--accent); }
+
+/* ── Comparison table ── */
+.compare-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+.compare-table th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+.compare-table th:nth-child(2) { color: var(--accent); }
+.compare-table th:nth-child(3) { color: var(--accent2); }
+.compare-table td {
+    padding: 0.75rem 0.75rem;
+    border-bottom: 1px solid rgba(37,42,53,0.5);
+    font-size: 0.87rem;
+    vertical-align: top;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+.compare-table td:nth-child(1) { color: var(--muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.check { color: var(--accent); font-size: 1rem; }
+.cross { color: var(--danger); font-size: 1rem; }
+
+/* ── Tips ── */
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1.25rem;
+}
+@media (max-width: 700px) { .tips-grid { grid-template-columns: 1fr; } }
+.tip-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+}
+.tip-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+}
+.tip-text {
+    font-size: 0.84rem;
+    color: var(--text);
+    line-height: 1.6;
+}
+
+/* ── CTA ── */
+.cta-section {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2.5rem;
+}
+.cta-section h3 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+.cta-section p {
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+/* ── Step flow ── */
+.step-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+}
+.step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1.1rem;
+}
+.step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 1.5rem;
+}
+.mexicano-step .step-num { color: var(--accent2); }
+.step-body {}
+.step-head { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem; }
+.step-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+
+/* ── Section title ── */
+.section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="rules-hero animate">
+    <div class="rules-eyebrow">📋 Руководство игрока</div>
+    <h1>ПРАВИЛА<br>ИГРЫ</h1>
+    <p>Полное руководство по форматам Американо и Мексикано — от основных принципов до тонкостей подсчёта очков.</p>
+</div>
+
+<!-- Format tabs -->
+<div class="format-tabs animate" style="animation-delay:0.1s">
+    <button class="tab-btn active" onclick="switchTab('americano', this)">
+        <span class="tab-icon">🔄</span> Американо
+    </button>
+    <button class="tab-btn" onclick="switchTab('mexicano', this)">
+        <span class="tab-icon">⚔️</span> Мексикано
+    </button>
+</div>
+
+<!-- ═══════════════ AMERICANO PANEL ═══════════════ -->
+<div id="panel-americano" class="tab-panel active">
+
+    <div class="format-header animate" style="animation-delay:0.15s">
+        <div class="format-big-icon">🔄</div>
+        <div>
+            <div class="format-title">АМЕРИКАНО</div>
+            <div class="format-tagline">Каждый играет с каждым. Ротация партнёров и соперников после каждого раунда. Очки начисляются за выигранные геймы лично каждому игроку.</div>
+        </div>
+    </div>
+
+    <!-- Core rules -->
+    <div class="rules-grid">
+        <div class="rule-card">
+            <div class="rule-number">1</div>
+            <span class="rule-icon">👥</span>
+            <div class="rule-title">Состав</div>
+            <div class="rule-text">Минимум 4 игрока. Рекомендуется количество, кратное 4: 4, 8, 12, 16... Каждый матч — 2 на 2 на одном корте. Если игроков больше, чем кортов позволяет разместить, часть игроков отдыхает в раунде.</div>
+        </div>
+        <div class="rule-card">
+            <div class="rule-number">2</div>
+            <span class="rule-icon">🔀</span>
+            <div class="rule-title">Ротация</div>
+            <div class="rule-text">После каждого раунда партнёры и соперники перемешиваются случайным образом. Цель — чтобы за турнир каждый сыграл вместе и против максимального числа участников.</div>
+        </div>
+        <div class="rule-card">
+            <div class="rule-number">3</div>
+            <span class="rule-icon">🏅</span>
+            <div class="rule-title">Очки</div>
+            <div class="rule-text">Очки каждого игрока равны числу геймов, выигранных его командой в матче. Если команда выиграла 7:3, каждый игрок команды получает 7 очков. Проигравшие получают 3. Очки суммируются по всем раундам.</div>
+        </div>
+        <div class="rule-card">
+            <div class="rule-number">4</div>
+            <span class="rule-icon">🏁</span>
+            <div class="rule-title">Длина матча</div>
+            <div class="rule-text">Обычно матч длится 16–24 гейма (в зависимости от договорённости). Популярный вариант — играть до 24 геймов, где сумма счёта всегда равна 24. Например: 15:9, 12:12, 20:4.</div>
+        </div>
+    </div>
+
+    <!-- Step-by-step -->
+    <div class="section-title">Как проходит турнир</div>
+    <div class="step-flow">
+        <div class="step-row">
+            <div class="step-num">1</div>
+            <div class="step-body">
+                <div class="step-head">Регистрация и жеребьёвка</div>
+                <div class="step-desc">Все игроки регистрируются. Система автоматически формирует пары и распределяет по кортам для первого раунда.</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num">2</div>
+            <div class="step-body">
+                <div class="step-head">Раунд</div>
+                <div class="step-desc">Все корты играют одновременно. Каждый матч — одна игра до обговорённого числа геймов. Судья или сами игроки ведут счёт геймов.</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num">3</div>
+            <div class="step-body">
+                <div class="step-head">Запись счёта</div>
+                <div class="step-desc">После матча оба счёта вносятся в систему. Очки автоматически добавляются каждому игроку. Таблица лидеров обновляется в реальном времени.</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num">4</div>
+            <div class="step-body">
+                <div class="step-head">Ротация и следующий раунд</div>
+                <div class="step-desc">Когда все матчи раунда сыграны, система формирует новые пары случайным образом и начинается следующий раунд.</div>
+            </div>
+        </div>
+        <div class="step-row">
+            <div class="step-num">5</div>
+            <div class="step-body">
+                <div class="step-head">Финал</div>
+                <div class="step-desc">После всех запланированных раундов подводятся итоги. Победитель — игрок с наибольшим числом очков.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scoring example -->
+    <div class="scoring-visual">
+        <div class="scoring-title">Пример начисления очков</div>
+        <div class="match-example">
+            <div class="match-team">Алексей & Мария</div>
+            <div class="match-score">15 : 9</div>
+            <div class="match-team right">Дмитрий & Анна</div>
+        </div>
+        <div class="pts-breakdown">
+            <div class="pts-chip"><span class="pts-name">Алексей</span><span class="pts-val">+15</span></div>
+            <div class="pts-chip"><span class="pts-name">Мария</span><span class="pts-val">+15</span></div>
+            <div class="pts-chip"><span class="pts-name">Дмитрий</span><span class="pts-val">+9</span></div>
+            <div class="pts-chip"><span class="pts-name">Анна</span><span class="pts-val">+9</span></div>
+        </div>
+        <div style="margin-top: 0.85rem; font-size: 0.82rem; color: var(--muted); line-height: 1.6;">
+            💡 Каждый игрок получает столько очков, сколько геймов выиграла его команда. Проигравшие тоже получают очки — за геймы, которые взяли.
+        </div>
+    </div>
+
+    <!-- Practical tips -->
+    <div class="section-title">Советы организатору</div>
+    <div class="tips-grid">
+        <div class="tip-card">
+            <div class="tip-num">СОВЕТ 01</div>
+            <div class="tip-text">Оптимальное число раундов — n–1, где n это число игроков, делённое на число кортов. Это позволяет каждому сыграть с каждым хотя бы раз.</div>
+        </div>
+        <div class="tip-card">
+            <div class="tip-num">СОВЕТ 02</div>
+            <div class="tip-text">Если игроков не кратно 4, система добавит «пустышек» для баланса. Такие игроки отдыхают в раунде — предупредите об этом заранее.</div>
+        </div>
+        <div class="tip-card">
+            <div class="tip-num">СОВЕТ 03</div>
+            <div class="tip-text">Договоритесь о длине гейма до начала: 16, 20 или 24 гейма. Важно, чтобы все матчи длились одинаково для честности итогов.</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══════════════ MEXICANO PANEL ═══════════════ -->
+<div id="panel-mexicano" class="tab-panel">
+
+    <div class="format-header mexicano animate" style="animation-delay:0.15s">
+        <div class="format-big-icon">⚔️</div>
+        <div>
+            <div class="format-title" style="color: var(--accent2)">МЕКСИКАНО</div>
+            <div class="format-tagline">Динамичная система сеяния: лидеры играют против лидеров, аутсайдеры — между собой. Каждый раунд пары формируются по текущему месту в таблице.</div>
+        </div>
+    </div>
+
+    <!-- Core rules -->
+    <div class="rules-grid">
+        <div class="rule-card mexicano-card">
+            <div class="rule-number">1</div>
+            <span class="rule-icon">📊</span>
+            <div class="rule-title">Динамическое сеяние</div>
+            <div class="rule-text">В отличие от Американо, здесь пары не случайны. После каждого раунда таблица обновляется, и игроки на 1-2 месте играют против 3-4, игроки на 5-6 против 7-8, и так далее.</div>
+        </div>
+        <div class="rule-card mexicano-card">
+            <div class="rule-number">2</div>
+            <span class="rule-icon">🤝</span>
+            <div class="rule-title">Формирование пар</div>
+            <div class="rule-text">Игрок №1 и игрок №4 образуют одну команду, игрок №2 и №3 — другую. Таким образом команды получаются сбалансированными по силе, что гарантирует конкурентные матчи.</div>
+        </div>
+        <div class="rule-card mexicano-card">
+            <div class="rule-number">3</div>
+            <span class="rule-icon">🏅</span>
+            <div class="rule-title">Очки</div>
+            <div class="rule-text">Система начисления очков идентична Американо: каждый игрок получает число очков, равное геймам, выигранным его командой. Личный зачёт, не командный.</div>
+        </div>
+        <div class="rule-card mexicano-card">
+            <div class="rule-number">4</div>
+            <span class="rule-icon">🎯</span>
+            <div class="rule-title">Сложность нарастает</div>
+            <div class="rule-text">С каждым раундом лидеры турнира встречаются со всё более сильными соперниками. Это делает финальные раунды особенно напряжёнными — один плохой матч может перевернуть всю таблицу.</div>
+        </div>
+    </div>
+
+    <!-- Step-by-step -->
+    <div class="section-title">Как формируются пары</div>
+    <div class="step-flow">
+        <div class="step-row mexicano-step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+                <div class="step-head">Первый раунд — случайная жеребьёвка</div>
+                <div class="step-desc">Так как таблицы ещё нет, первый раунд разыгрывается случайным образом, как в Американо.</div>
+            </div>
+        </div>
+        <div class="step-row mexicano-step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+                <div class="step-head">Обновление таблицы</div>
+                <div class="step-desc">После каждого раунда игроки сортируются по набранным очкам. При равенстве очков — по числу побед в матчах.</div>
+            </div>
+        </div>
+        <div class="step-row mexicano-step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+                <div class="step-head">Формирование пар по рейтингу</div>
+                <div class="step-desc">Берём 4 игрока из соответствующей «группы» таблицы. Игрок №1 + №4 vs игрок №2 + №3. Это уравнивает силы команд и делает игру честной.</div>
+            </div>
+        </div>
+        <div class="step-row mexicano-step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+                <div class="step-head">Распределение по кортам</div>
+                <div class="step-desc">Лучшие игроки получают «центральный» корт. Это добавляет престижа и мотивирует выкладываться полностью.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Example seeding -->
+    <div class="scoring-visual">
+        <div class="scoring-title">Пример сеяния (8 игроков, 2 корта)</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+                <div style="font-size:0.75rem; color: var(--accent2); font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem">Корт 1 (топ)</div>
+                <div class="match-example" style="padding:0.7rem 0.9rem; margin-bottom:0">
+                    <div class="match-team" style="font-size:0.82rem">🥇 #1 & 🥉 #4</div>
+                    <div class="match-score" style="font-size:1.3rem; color:var(--accent2)">VS</div>
+                    <div class="match-team right" style="font-size:0.82rem">#2 & #3 🥈</div>
+                </div>
+            </div>
+            <div>
+                <div style="font-size:0.75rem; color: var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem">Корт 2</div>
+                <div class="match-example" style="padding:0.7rem 0.9rem; margin-bottom:0">
+                    <div class="match-team" style="font-size:0.82rem">#5 & #8</div>
+                    <div class="match-score" style="font-size:1.3rem; color:var(--muted)">VS</div>
+                    <div class="match-team right" style="font-size:0.82rem">#6 & #7</div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 0.85rem; font-size: 0.82rem; color: var(--muted); line-height: 1.6;">
+            💡 Команды намеренно составляются из игроков разных позиций (#1+#4, #2+#3), чтобы сбалансировать их силу. Это гарантирует конкурентную борьбу в каждом матче.
+        </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="section-title">Советы организатору</div>
+    <div class="tips-grid">
+        <div class="tip-card">
+            <div class="tip-num">СОВЕТ 01</div>
+            <div class="tip-text">Мексикано особенно интересен для групп с разным уровнем игры — слабые игроки не будут раз за разом проигрывать сильным.</div>
+        </div>
+        <div class="tip-card">
+            <div class="tip-num">СОВЕТ 02</div>
+            <div class="tip-text">Минимальное число раундов — 3. Меньше не имеет смысла, таблица не успевает сформироваться для интересного сеяния.</div>
+        </div>
+        <div class="tip-card">
+            <div class="tip-num">СОВЕТ 03</div>
+            <div class="tip-text">В Мексикано важно объявлять таблицу перед каждым раундом — это создаёт накал и вовлечённость всех участников.</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══════════════ COMPARISON TABLE ═══════════════ -->
+<div class="compare-section animate" style="animation-delay:0.3s">
+    <div class="section-title">Сравнение форматов</div>
+    <table class="compare-table">
+        <thead>
+            <tr>
+                <th>Параметр</th>
+                <th>🔄 Американо</th>
+                <th>⚔️ Мексикано</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Формирование пар</td>
+                <td>Случайное каждый раунд</td>
+                <td>По текущему месту в таблице</td>
+            </tr>
+            <tr>
+                <td>Система очков</td>
+                <td>Геймы своей команды → лично</td>
+                <td>Геймы своей команды → лично</td>
+            </tr>
+            <tr>
+                <td>Подходит для</td>
+                <td>Клубные дни, знакомство, Social</td>
+                <td>Соревнования, миксед-турниры</td>
+            </tr>
+            <tr>
+                <td>Минимум игроков</td>
+                <td>4</td>
+                <td>4 (лучше от 8)</td>
+            </tr>
+            <tr>
+                <td>Фактор везения</td>
+                <td>Высокий (случайные пары)</td>
+                <td>Средний (сильные vs сильных)</td>
+            </tr>
+            <tr>
+                <td>Разные уровни игроков</td>
+                <td style="color:var(--muted)">Возможен дисбаланс</td>
+                <td>Само-балансируется ✓</td>
+            </tr>
+            <tr>
+                <td>Социальность</td>
+                <td>⭐⭐⭐⭐⭐ Максимальная</td>
+                <td>⭐⭐⭐⭐ Высокая</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- CTA -->
+<div class="cta-section animate" style="animation-delay:0.35s">
+    <h3>ГОТОВЫ ИГРАТЬ?</h3>
+    <p>Создайте турнир за 30 секунд — просто введите имена участников.</p>
+    <a href="/" class="btn btn-primary" style="font-size:1rem; padding: 0.75rem 2rem">
+        🏆 Создать турнир
+    </a>
+</div>
+
+<script>
+function switchTab(format, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + format).classList.add('active');
+}
+</script>
+
+{% endblock %}
