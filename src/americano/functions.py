@@ -1,11 +1,12 @@
 import json, random, math
 from americano.models import Match, Tournament, generate_id
+from database import PlayerORM
 from typing import List
 
 def generate_americano_rounds(players: List[str], courts: int, num_rounds: int) -> List[List[Match]]:
     """Generate Americano rounds where partners and opponents rotate."""
     rounds = []
-    n = len(players)
+    n = num_rounds + 1
     
     # Ensure even number of players
     if n % 4 != 0:
