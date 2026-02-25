@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Form, Depends, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_session, TournamentORM, PlayerORM, MatchORM
@@ -8,6 +9,7 @@ from americano.functions import generate_americano_rounds, calculate_standings
 
 router = APIRouter(prefix='/americano', tags=['Американо'])
 templates = Jinja2Templates(directory="templates")
+router.mount("/static", StaticFiles(directory="static"), name="static")
 # In-memory storage (could be replaced with DB)
 # tournaments_db: dict = {}
 
