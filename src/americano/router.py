@@ -271,14 +271,6 @@ async def swap_player(
     session: AsyncSession = Depends(get_session),
 ):
 
-
-    print("=== SWAP PLAYER DEBUG ===")
-    print(f"tid       : {tid}")
-    print(f"match_id  : {match_id}")
-    print(f"position  : {position}")
-    print(f"new_pid   : {new_pid}")
-    print("========================")
-
     t_orm = await _get_tournament_orm(tid, session)
 
     if t_orm.status != "active":
@@ -291,8 +283,6 @@ async def swap_player(
         (m for m in t_orm.matches if m.id == match_id and m.round == current_round_num),
         None
     )
-    
-    print(f"→ Матч найден: {target_match_orm.id}, round={target_match_orm.round}, completed={target_match_orm.completed}")
 
     if not target_match_orm or target_match_orm.completed:
         raise HTTPException(status_code=400, detail="Матч не найден или уже завершён")
@@ -336,6 +326,4 @@ async def swap_player(
         setattr(new_match, new_tk, new_team2)
 
     await session.commit()
-    print('logg '+str(idx_str))
-
     return RedirectResponse(f"/americano/tournament/{tid}", status_code=303)
