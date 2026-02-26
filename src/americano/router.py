@@ -319,7 +319,7 @@ async def swap_player(
     setattr(target_match_orm, team_key, new_team)           # присваиваем новый объект списка
 
     # если есть второй матч (swap)
-    if new_match is not None:
+    if new_match is not None and new_match == target_match_orm:
         old_team2 = getattr(new_match, new_tk)
         new_team2 = old_team2.copy()
         new_team2[new_i] = old_pid
