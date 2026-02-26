@@ -71,3 +71,148 @@
     opacity: 0.6;
     cursor: default;
 }
+
+    @media (max-width: 560px) {
+    .nav-links {
+        display: none;
+    }
+
+    .nav-mobile-toggle {
+        display: block;
+        font-size: 1.6rem;
+        color: var(--text);
+        cursor: pointer;
+        padding: 0.4rem 0.6rem;
+        margin-left: auto;
+    }
+
+    .nav-mobile-menu {
+        display: none;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem;
+        z-index: 99;
+    }
+
+    .nav-mobile-menu.visible {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .nav-link-mobile {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .nav-link-mobile:hover,
+    .nav-link-mobile.active-americano,
+    .nav-link-mobile.active-mexicano {
+        background: var(--surface2);
+        color: var(--text);
+    }
+}
+
+/* на десктопе прячем гамбургер */
+@media (min-width: 561px) {
+    .nav-mobile-toggle,
+    .nav-mobile-menu {
+        display: none !important;
+    }
+}
+
+
+/* =============================================
+   Предотвращаем вылезание текста на мобильных
+   ============================================= */
+
+.card {
+  overflow: hidden;           /* на всякий случай — чтобы ничего не торчало */
+  word-wrap: break-word;      /* старое, но надёжное */
+}
+
+/* Самое важное — разрешаем перенос слов в нужных местах */
+.compare-table,
+.card,
+.section-title,
+.player-name,
+.player-cell,
+.t-name,
+.t-meta,
+.history-match-row,
+.history-match,
+.share-url,
+.modal-players .player-option {
+  word-break: break-word;     /* ломает длинные слова (очень длинные имена/ссылки) */
+  overflow-wrap: break-word;  /* современный аналог word-wrap */
+  hyphens: auto;              /* автоматические переносы по слогам — работает на русском */
+}
+
+/* Особенно критичные места — имена игроков и названия */
+.player-name,
+.player-cell,
+.t-name {
+  white-space: normal;        /* разрешаем перенос на несколько строк */
+  word-break: break-all;      /* самый агрессивный вариант — если имя ОЧЕНЬ длинное */
+  /* или более мягкий вариант: */
+  /* word-break: break-word; */
+}
+
+/* Если хотите показывать ellipsis (...) при переполнении (вместо переноса) */
+.player-name.truncate-on-mobile,
+.history-match-row > span:nth-child(2),  /* имя первой команды */
+.history-match-row > span:nth-child(4) { /* имя второй команды */
+  @media (max-width: 480px) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;           /* подберите под ваш дизайн */
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+/* Для мобильных — уменьшаем шрифты в карточках, где текст часто длинный */
+@media (max-width: 480px) {
+  .player-name {
+    font-size: 0.98rem;         /* чуть меньше, но всё ещё читаемо */
+    line-height: 1.35;
+  }
+
+  .t-name {
+    font-size: 1.15rem;
+  }
+
+  .t-meta {
+    font-size: 0.82rem;
+    line-height: 1.3;
+  }
+
+  .section-title {
+    font-size: 1.35rem;
+    line-height: 1.15;
+  }
+
+  .history-match-row {
+    font-size: 0.9rem;
+    gap: 0.5rem;
+  }
+
+  .history-match-row > span {
+    max-width: 38%;             /* грубая защита от вылезания */
+  }
+
+  .share-url {
+    font-size: 0.88rem;
+  }
+}

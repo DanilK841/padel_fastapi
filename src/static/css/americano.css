@@ -1,3 +1,213 @@
+/* ==========================================================================
+   Мобильная адаптация — основные брейкпоинты
+   ========================================================================== */
+
+@media (max-width: 960px) {
+    main {
+        padding: 1.5rem 1rem;
+    }
+    
+    .hero h1 {
+        font-size: 4.2rem;
+    }
+    
+    .create-section {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .court-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tournament-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+    }
+    
+    .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .share-bar .share-inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .share-url {
+        order: 1;
+    }
+    
+    .copy-btn {
+        order: 2;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 720px) {
+    .hero {
+        padding: 2rem 0 1rem;
+    }
+    
+    .hero h1 {
+        font-size: 3.6rem;
+        line-height: 0.92;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    h1 { font-size: 2.6rem; }
+    h2 { font-size: 1.9rem; }
+    h3 { font-size: 1.35rem; }
+    
+    .section-title {
+        font-size: 1.35rem;
+    }
+    
+    .stat-value {
+        font-size: 2.8rem;
+    }
+    
+    .stat-box {
+        padding: 1rem 0.9rem;
+    }
+    
+    .court-header {
+        padding: 0.6rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .vs-layout {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .vs-divider {
+        align-self: center;
+        font-size: 1.4rem;
+    }
+    
+    .team-label {
+        text-align: center;
+    }
+    
+    .score-display {
+        justify-content: center;
+        gap: 0.6rem;
+    }
+    
+    .score-val {
+        font-size: 3.2rem;
+        width: 80px;
+        padding: 0.4rem 0;
+    }
+    
+    .score-colon {
+        font-size: 2.6rem;
+    }
+    
+    .standings-table {
+        font-size: 0.86rem;
+    }
+    
+    .standings-table th, .standings-table td {
+        padding: 0.7rem 0.5rem;
+    }
+    
+    .pts-cell {
+        font-size: 1.4rem;
+    }
+    
+    .rank-cell {
+        width: 32px;
+        font-size: 1rem;
+    }
+    
+    .round-indicator {
+        justify-content: center;
+        gap: 0.35rem;
+    }
+    
+    .round-dot {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+    
+    .toast {
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+        transform: none;
+        max-width: none;
+        width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    nav {
+        padding: 0 1rem;
+        height: 54px;
+    }
+    
+    .logo {
+        font-size: 1.4rem;
+    }
+    
+    .nav-link {
+        font-size: 0.74rem;
+        padding: 0.3rem 0.7rem;
+    }
+    
+    .hero h1 {
+        font-size: 3rem;
+    }
+    
+    .btn {
+        padding: 0.55rem 1.1rem;
+        font-size: 0.84rem;
+    }
+    
+    .btn-xs {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.74rem;
+    }
+    
+    .score-input {
+        font-size: 2.2rem;
+        padding: 0.45rem;
+    }
+    
+    .history-score-input {
+        font-size: 1.6rem;
+        width: 60px;
+        padding: 0.35rem 0.5rem;
+    }
+    
+    .modal-content {
+        width: 96%;
+        padding: 1.5rem 1.25rem;
+    }
+    
+    .player-option {
+        padding: 0.9rem 1rem;
+        font-size: 0.95rem;
+    }
+}
+
+
 .hero {
     text-align: center;
     padding: 3rem 0 0;
