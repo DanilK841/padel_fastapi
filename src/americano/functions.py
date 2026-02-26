@@ -94,3 +94,5 @@ def calculate_standings(tournament: Tournament) -> List[dict]:
         s["rank"] = i + 1
     return standings
 
+
+
