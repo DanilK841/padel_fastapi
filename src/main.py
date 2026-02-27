@@ -19,8 +19,14 @@ async def lifespan(app: FastAPI):
     yield
     await engine.dispose()
 
+BASE_DIR = Path(__file__).resolve().parent
+
 app = FastAPI(lifespan=lifespan, title="Padel Americano")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount(
+    "/static",
+    StaticFiles(directory=BASE_DIR / "static"),
+    name="static"
+)
 
 templates = Jinja2Templates(directory="templates")
 
