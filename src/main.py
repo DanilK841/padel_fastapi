@@ -37,3 +37,7 @@ app.include_router(mexicano_router)
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/yandex_fd5d8fc73755f9a1.html", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("yandex_fd5d8fc73755f9a1.html", {"request": request})
