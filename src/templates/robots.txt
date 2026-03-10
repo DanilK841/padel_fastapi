@@ -1,0 +1,4 @@
+User-agent: *
+
+Disallow: /americano/tournament/*
+Disallow: /mexicano/*

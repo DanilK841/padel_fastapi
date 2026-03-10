@@ -41,3 +41,7 @@ async def home(request: Request):
 @app.get("/yandex_fd5d8fc73755f9a1.html", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("yandex_fd5d8fc73755f9a1.html", {"request": request})
+
+@app.get("/robots.txt", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("robots.txt", {"request": request})
